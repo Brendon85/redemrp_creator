@@ -325,7 +325,19 @@ AddEventHandler('redemrp_skin:LoadSkinClient', function()
     TriggerServerEvent("RedEM:server:LoadSkin")
 end)
 
-RegisterCommand('loadskin', function(source, args, raw)
+RegisterCommand('reloadskin', function(_, _, _)
+    local ped = PlayerPedId()
+    local isDead = IsEntityDead(ped)
+    local isDying = IsPedDeadOrDying(ped, true)
+    local isVehicle = IsPedInAnyVehicle(ped, true)
+    local health = GetEntityHealth(ped)
+    local healthCore = GetAttributeCoreValue(ped, 0)
+
+    if isDead or isDying or isVehicle or health <= 100 or healthCore <= 100 then
+        TriggerEvent('redem_roleplay:NotifyLeft', "Hey", "You can't use this command when you are dying or in a vehicle", "scoretimer_textures", "scoretimer_generic_cross", 3000)
+        return
+    end
+
     TriggerServerEvent("RedEM:server:LoadSkin", true)
 end)
 
